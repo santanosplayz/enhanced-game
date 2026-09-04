@@ -20,9 +20,9 @@
         <div id="superMode">⭐ SUPER MODE! ⭐ (PERMANENT)</div>
         <div class="level-select" id="ls"></div>
         <div id="controls">
-            <div>⬆️⬅️⬇️➡️ Move</div>
-            <div>SPACE Jump / Double Jump (Super)</div>
-            <div>SPACE again while flying to stop</div>
+            <div>⬆️⬅️⬇️➡️ Move / Fly Up/Down</div>
+            <div>SPACE Jump / Double Jump (Super) to Fly</div>
+            <div>Release SPACE while flying to stop</div>
             <div>10 Rings = ⭐ PERMANENT Super!</div>
         </div>
         <div id="bossWarning"></div>
@@ -39,6 +39,7 @@
         canvas.height = window.innerHeight;
 
         const keys = {};
+        let spacePressed = false;
         
         const levels = [
             // Regular Levels (1-2)
@@ -95,7 +96,7 @@
         const jumpPower = 15;
         const superJumpPower = 12;
         const superModeGlide = 0.15;
-        const flySpeed = 3;
+        const flySpeed = 4;
 
         // ========================================
         // GAME INITIALIZATION
@@ -245,8 +246,8 @@
                 if (keys['ArrowUp'] || keys['w'] || keys['W']) gameState.player.vy = -flySpeed;
                 if (keys['ArrowDown'] || keys['s'] || keys['S']) gameState.player.vy = flySpeed;
 
-                // Stop flying with double jump
-                if ((keys[' '] || keys['ArrowUp'] || keys['w'] || keys['W']) && gameState.player.doubleJumpUsed) {
+                // Stop flying when space is released
+                if (!spacePressed) {
                     gameState.player.flying = false;
                     gameState.player.vy = 0;
                     gameState.player.jumping = false;
@@ -628,10 +629,16 @@
         function setupEventListeners() {
             window.addEventListener('keydown', (e) => {
                 keys[e.key] = true;
+                if (e.key === ' ') {
+                    spacePressed = true;
+                }
             });
 
             window.addEventListener('keyup', (e) => {
                 keys[e.key] = false;
+                if (e.key === ' ') {
+                    spacePressed = false;
+                }
             });
 
             window.addEventListener('resize', () => {
